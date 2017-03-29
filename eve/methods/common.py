@@ -292,9 +292,10 @@ def last_updated(document):
     Comparisons between the two would fail.
 
     If LAST_UPDATE is missing we assume that it has been created outside of the
-    API context and inject a default value, to allow for proper computing of
-    Last-Modified header tag. By design all documents return a LAST_UPDATED
-    (and we don't want to break existing clients).
+    API context and inject a default value. If there is LAST_UPDATE, but it's
+    not defined (set to None) also inject a default value. This allows for
+    proper computing of Last-Modified header tag. By design all documents
+    return a LAST_UPDATED (and we don't want to break existing clients).
 
     :param document: the document to be processed.
 
@@ -304,7 +305,7 @@ def last_updated(document):
 
     .. versionadded:: 0.0.5
     """
-    if config.LAST_UPDATED in document:
+    if config.LAST_UPDATED in document and document[config.LAST_UPDATED]:
         return document[config.LAST_UPDATED].replace(tzinfo=None)
     else:
         return epoch()
