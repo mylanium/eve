@@ -266,6 +266,17 @@ def last_updated(document):
     if config.LAST_UPDATED in document and document[config.LAST_UPDATED]:
         return document[config.LAST_UPDATED].replace(tzinfo=None)
     else:
+        if not config.LAST_UPDATED in document:
+            message = ('On the {method} "{url}" request, document with '
+                       '{id_field}="{id_field_value}" has no field '
+                       '"{last_updated_field}. Document: {document}".'.format(
+                            id_field=config.ID_FIELD,
+                            id_field_value=document[config.ID_FIELD],
+                            last_updated_field=config.LAST_UPDATED,
+                            method=request.method,
+                            url=request.url,
+                            document=document))
+            app.logger.warn(message)
         return epoch()
 
 
